@@ -9,3 +9,5 @@ http://php.net/simplexml
 https://github.com/paulbain/Bain-PHP-Library
 
 https://github.com/servo-php/fluidxml
+
+http://stackoverflow.com/questions/6753095/generate-a-plist-with-php
