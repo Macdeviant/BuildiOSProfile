@@ -2,6 +2,8 @@ Just # BuildiOSProfile
 
 https://github.com/robperc/Payloads
 
+https://blog.skipfault.com/2013/04/02/create-an-exchange-configuration-profile-using-php/
+
 https://davidwalsh.name/basic-php-file-handling-create-open-read-write-append-close-delete
 
 http://stackoverflow.com/questions/486757/how-to-generate-xml-file-dynamically-using-php
