@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>Profile Creator Form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link href="DatePicker/jquery.datepick.css" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	
+	<script src="DatePicker/jquery.plugin.js"></script>
+	<script src="DatePicker/jquery.datepick.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('#auth_type').on('change', function() {
+				if ( this.value == 'PCERT') {
+					$("#bulk_CERT").hide();
+					$("#edu_CERT").show();
+					$("#email_too").hide();
+					$("#edu_P").hide();
+					$("#edu_UNP").hide();
+					$("#edu_username").val('');
+					$("#edu_pw").val('');
+
+				} else if ( this.value == 'EUNP') {
+					$("#bulk_CERT").hide();
+					$("#edu_CERT").hide();
+					$("#edumailoptions").show();
+					$("#edu_P").show();
+					$("#edu_UNP").show();
+					$("#uploaded_file").val('');
+					$("#Cert_pw").val('');
+
+				} else if ( this.value == 'BulkCERT') {
+					$("#bulk_CERT").show();
+					$("#edu_CERT").hide();
+					$("#email_too").hide();
+					$("#edu_P").hide();
+					$("#edu_UNP").hide();
+					$("#uploaded_file").val('');
+					$("#Cert_pw").val('');
+				}
+			});
+			
+			$('#proxy_type').on('change', function() {
+				if ( this.value == 'Auto') {
+					$("#proxy_url").show();
+					$("#proxy_pac").val('http://eduproxy/wpad.dat');
+					$("#man_proxy").hide();
+					$("#proxy_ip").val('');
+					$("#proxy_port").val('');
+
+				} else  if ( this.value == 'Manual') {
+					$("#proxy_url").hide();
+					$("#proxy_pac").val('');
+					$("#man_proxy").show();
+					$("#proxy_ip").val('eduproxy');
+					$("#proxy_port").val('8080');
+
+				} else  if ( this.value == 'None') {
+					$("#proxy_url").hide();
+					$("#proxy_pac").val('');
+					$("#man_proxy").hide();
+					$("#proxy_ip").val('');
+					$("#proxy_port").val('');
+				}
+			});
+			
+			$('#adv_opt').on('change', function() {
+				if ( this.value == 'Hide')
+					$("#advanced").hide();
+				else if ( this.value == 'Show')
+					$("#advanced").show();
+			});
+			
+			$('#eduMail_selection').on('change', function() {
+				if ( this.value == 'Hide')
+					$("#eduMail_address").hide();
+					
+				else if ( this.value == 'Show')
+					$("#eduMail_address").show();
+					
+			});
+			
+			 $('#selection_type').on('change', function() {
+				if ( this.value == 'Never') {
+					$("#Never_selection").show();
+					$("#Never_remove").val('Never_remove');
+					$("#Days_selection").hide();
+					$("#Days_Setting").val('');
+					$("#Date_selection").hide();
+					$("#Date_Setting").val('');
+				} else if ( this.value == 'Days') {
+					$("#Never_selection").hide();
+					$("#Never_remove").val('');
+					$("#Days_selection").show();
+					$("#Days_Setting").val('1');
+					$("#Date_selection").hide();
+					$("#Date_Setting").val('');
+				} else  if ( this.value == 'Date') {
+					$("#Never_selection").hide();
+					$("#Days_selection").hide();
+					$("#Days_Setting").val('');
+					$("#Never_remove").val('');
+					$("#Date_selection").show();
+					$("#Date_Setting").val('');
+				}
+			});
+			
+			$('#Date_Setting').datepick({ 
+				minDate: 0, 
+				maxDate: +2555, 
+				dateFormat: 'yyyy-mm-dd', 
+				showTrigger: '#calImg'
+			});
+		});
+		
+		    // let the browser natively reset default
+			$(window).bind("pageshow", function() {
+    		var form = $('form'); 
+    		form[0].reset();
+			});
+			
+		</script>
+	
+</head>
+<body>
+
+	<div id="page-wrap">
+			<center><img src="images/eduSTAR.png" align="left" alt="eduSTAR Profile Creator Form" /><br><img src="images/title.png" align="right" alt="Profile Creator Form" /><br>
+				<img src="images/IOS.png" align="middle" alt="IOS" /></center>
+	
+		<div id="contact-area">
+			
+			<form enctype="multipart/form-data" action="uploadSAM.php" method="post">
+                <label for='SSID_Name'>SSID:</label>
+                    <select name="SSID_Name" title="eduSTAR (default)" size=1 id='SSID_Name'>
+                        <option name=eduSTAR value=eduSTAR selected>eduSTAR (default)</option>
+                        <option name=eduSTAR_A value=eduSTAR_A>eduSTAR_A</option>
+                        <option name=eduSTAR_B value=eduSTAR_B>eduSTAR_B</option>
+                    </select> <BR><BR>
+				
+				<label for='profile_type'>Profile Type:</label>
+                    <select name="profile_type" title="System (OSX) or User (iOS/OSX) or ATV" size=1 id='profile_type'/>
+                        <option name="User" value=User selected>User Profile (iOS or OS X)</option>
+						<option name="System" value=System>System Profile (OS X Machine Profile)</option>
+                        <option name="ATV" value=ATV>ATV Profile (uses Global HTTP Proxy)</option>
+                      </select> <BR><BR>
+
+                <label for='auth_type'>Auth Type:</label>
+                    <select name="auth_type" title="Authentication type" size=1 id='auth_type'/>
+                        <option name=PCERT value=PCERT selected>Cert Authentication</option>
+                        <option name=BulkCERT value=BulkCERT>Bulk Cert Authentication (with zip)</option>
+						<option name=EUNP value=EUNP>User Authentication</option>
+                      </select><BR><BR>
+                      
+            <div style='display:inline;' id='edu_CERT'>
+            	<label for="uploaded_pfxfile">PFX File:</label>
+                <input name="uploaded_pfxfile" id="uploaded_pfxfile" title="edustar pfx file" type="file" accept = ".pfx" >
+                
+                <label for='pfx_Cert_pw'>Cert Password:</label>
+                <input name="pfx_Cert_pw" title="may be left blank for standard values" id="pfx_Cert_pw" type="password" size="5" />
+             
+             </div>
+             
+              <div style='display:none;' id='bulk_CERT'>
+                <label for="uploaded_zipfile">Zip File:</label>
+                <input name="uploaded_zipfile" id="uploaded_zipfile" title="zip containing edustar pfx files" type="file" accept = ".zip" />
+                
+                <label for='zip_Cert_pw'>Cert Password:</label>
+                <input name="zip_Cert_pw" title="may be left blank for standard values" id="zip_Cert_pw" type="password" size="5" />
+             </div>
+             
+             <div style='display:none;' id='edu_P'>
+               <label for='edu_P'>Edu Domain:</label>
+                    <select name=eduprefix title="EDU001 or EDU002 username prefix" size=1 id='eduprefix'>
+                        <option name=EDU001 value=EDU001 selected>EDU001\</option>
+                        <option name=EDU002 value=EDU002>EDU002\</option><BR><BR>
+                    </select>
+             </div>
+             
+             <div style='display:none;' id='edu_UNP'><BR>
+                <label for="edu_un">Edustar UN:</label>
+                <input name="edu_un" id="edu_un" title="Edustar Username" type="text" size="5" placeholder="012345678"/>
+                <BR>
+                <label for='edu_pw'>Edustar PW:</label>
+                <input name="edu_pw" title="Edustar Password" id="edu_pw" type="password" size="5" placeholder="Compl3x7"/>
+             	<BR>
+             	
+             	<div style='display:none;' id='edumailoptions'>
+             		<label for='eduMail_selection'>Edumail Conf:</label>
+                    <select name=eduMail_selection title="Add eduMail to the profile" size=1 id='eduMail_selection'>
+                        <option name=Hide value=Hide selected>NO</option>
+                        <option name=Show value=Show>YES</option>
+                    </select><BR><BR>
+    
+
+                    <div style='display:none;' id='eduMail_address'>
+             			<label for='email_too'>Email:</label>
+						<input name="edumailaddy" id="edumailaddy" title="Enter the eduMail email address" type="text" size="5" placeholder="staff@edumail.vic.gov.au"/>
+             		</div>
+				</div>
+             </div>
+
+            	<label for='proxy_type'>Proxy Type:</label>
+                    <select name=proxy_type title="Auto or Manual" size=1 id='proxy_type'>
+                        <option name=Auto value=Auto selected>Proxy URL (Recommended)</option>
+                        <option name=Manual value=Manual>Manual Proxy and Port </option>
+                        <option name=None value=None>None </option>
+
+                    </select>
+                                   
+            <BR><BR>
+
+            
+                    <div style='display:inline;' id='proxy_url'>
+                        <label for='proxy_pac'>Proxy URL:</label>
+                        	<input title="wpad or pac file URL" type="text" id="proxy_pac" name="proxy_pac" value="http://eduproxy/wpad.dat" />
+                    </div>
+            <div id="contact-area3">
+
+                    <div style='display:none;' id='man_proxy'>
+                            <label for='proxy_ip'>Proxy Name/IP:</label>
+                                <input title="Proxy Server IP or Name" type="text" id="proxy_ip" name="proxy_ip" value="eduproxy" />
+                            <label for='proxy_port'>Proxy Port:</label>
+                            	<input title="Proxy Port Number" type="text" id="proxy_port" name="proxy_port" value="8080"/>
+            
+                        
+                    </div>
+			</div>
+            
+            	<label for='selection_type'>Auto Removal:</label>
+                    <select name=selection_type title="Profile auto-removal options" size=1 id='selection_type'>
+                        <option name=Never value=Never selected>Never (default)</option>
+                        <option name=Days value=Days>After X days</option>
+                        <option name=Date value=Date>On this date</option>
+                    </select>
+
+   					<div style='display:inline;' id='Never_selection'><BR>
+                        <label for='Never_remove'></label>
+                        <input title="Never remove" type="hidden" id="Never_remove" name="Never_remove" value="none" />
+                    </div>
+                        
+
+               		<div style='display:none;' id='Days_selection'><BR>
+                         <label for='Days_Setting'>After Days:</label>
+                         <input title="Days Setting:" type="number" min="1" max="2555" pattern="^[0-9]" step="1" id="Days_Setting" name="Days_Setting" value="1" />
+				            
+                  	</div>
+                  	 	
+					<div style='display:none;' id='Date_selection'><BR>
+                         <label for='Date_Setting'>On date:</label>
+                         <input title="Date Setting:" type="text" id="Date_Setting" name="Date_Setting" value="" />
+
+                  	</div><BR><BR>
+<!--ADVANCED SECTION
+
+                <label for='adv_opt'>Extra Options:</label>
+                    <select name=adv_opt title="Hide or Show" size=1 id='adv_opt'>
+                        <option name=Hide value=Hide selected> Simple</option>
+                        <option name=Show value=Show>Advanced:</option>
+                    </select><BR><BR><BR>
+                    
+                    
+           		<div style='display:none;' id='advanced'>				
+                
+                <label for='Payload_DisplayName'></label>
+                	<input title="Payload Display Name" type="text" name="Payload_DisplayName" value="Edustar Wireless Profile" />
+            
+                <label for='Payload_Organization'></label>
+                	<input title="Payload Organisation" type="text" name="Payload_Organization" value="DET Edustar Wireless" />
+            
+                <label for='Payload_Description'></label>
+                	<input title="Payload Description" type="text" name="Payload_Description" value="Automatically configured payload for DET Edustar wireless" />
+
+                </div>  
+-->				<input type="hidden" name="Language" value="English">
+
+                 <div id="contact-area2">
+
+            </div>
+            
+            <input type="submit" name="submit" value="Submit" class="submit-button" />
+			
+			</div>  
+                </form>
+                                    A web tool by Craig Hair
+
+                    <div style="clear: both;"></div>
+                
+        </div>
+            
+    </body>
+</html>
