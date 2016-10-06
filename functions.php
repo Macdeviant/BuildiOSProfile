@@ -58,7 +58,7 @@ function get_cert_data () {
 }
  
 
-function unzip($file){
+function unzip($file){ //http://php.net/manual/en/ref.zip.php
 
     $zip=zip_open(realpath(".")."/".$file);
     if(!$zip) {return("Unable to proccess file '{$file}'");}
