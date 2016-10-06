@@ -58,59 +58,47 @@ function get_cert_data () {
 }
  
 
-function Unzip($dir, $file, $destiny="") 
-{ 
-    $dir .= DIRECTORY_SEPARATOR; 
-    $path_file = $dir . $file; 
-    $zip = zip_open($path_file); 
-    $_tmp = array(); 
-    $count=0; 
-    if ($zip) 
-    { 
-        while ($zip_entry = zip_read($zip)) 
-        { 
-            $_tmp[$count]["filename"] = zip_entry_name($zip_entry); 
-            $_tmp[$count]["stored_filename"] = zip_entry_name($zip_entry); 
-            $_tmp[$count]["size"] = zip_entry_filesize($zip_entry); 
-            $_tmp[$count]["compressed_size"] = zip_entry_compressedsize($zip_entry); 
-            $_tmp[$count]["mtime"] = ""; 
-            $_tmp[$count]["comment"] = ""; 
-            $_tmp[$count]["folder"] = dirname(zip_entry_name($zip_entry)); 
-            $_tmp[$count]["index"] = $count; 
-            $_tmp[$count]["status"] = "ok"; 
-            $_tmp[$count]["method"] = zip_entry_compressionmethod($zip_entry); 
-            
-            if (zip_entry_open($zip, $zip_entry, "r")) 
-            { 
-                $buf = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry)); 
-                if($destiny) 
-                { 
-                    $path_file = str_replace("/",DIRECTORY_SEPARATOR, $destiny . zip_entry_name($zip_entry)); 
-                } 
-                else 
-                { 
-                    $path_file = str_replace("/",DIRECTORY_SEPARATOR, $dir . zip_entry_name($zip_entry)); 
-                } 
-                $new_dir = dirname($path_file); 
-                
-                // Create Recursive Directory 
-                mkdirr($new_dir); 
-                
+function unzip($file){
 
-                $fp = fopen($dir . zip_entry_name($zip_entry), "w"); 
-                fwrite($fp, $buf); 
-                fclose($fp); 
+    $zip=zip_open(realpath(".")."/".$file);
+    if(!$zip) {return("Unable to proccess file '{$file}'");}
 
-                zip_entry_close($zip_entry); 
-            } 
-            echo "\n</pre>"; 
-            $count++; 
-        } 
 
-        zip_close($zip); 
+    while($zip_entry=zip_read($zip)) {
+       $zdir=dirname(zip_entry_name($zip_entry));
+       $zname=zip_entry_name($zip_entry);
+
+       if(!zip_entry_open($zip,$zip_entry,"r")) {$e.="Unable to proccess file '{$zname}'";continue;}
+       if(!is_dir($zdir)) mkdirr($zdir,0777);
+
+       print "{$zdir} | {$zname} \n";
+
+       $zip_fs=zip_entry_filesize($zip_entry);
+       if(empty($zip_fs)) continue;
+
+       $zz=zip_entry_read($zip_entry,$zip_fs);
+
+       $z=fopen($zname,"w");
+       fwrite($z,$zz);
+       fclose($z);
+       zip_entry_close($zip_entry);
+
     } 
+    zip_close($zip);
+
 } 
 
+function mkdirr($pn,$mode=null) {
+
+  if(is_dir($pn)||empty($pn)) return true;
+  $pn=str_replace(array('/', ''),DIRECTORY_SEPARATOR,$pn);
+
+  if(is_file($pn)) {trigger_error('mkdirr() File exists', E_USER_WARNING);return false;}
+
+  $next_pathname=substr($pn,0,strrpos($pn,DIRECTORY_SEPARATOR));
+  if(mkdirr($next_pathname,$mode)) {if(!file_exists($pn)) {return mkdir($pn,$mode);} }
+  return false;
+}
 
 
 function prettyXML($xml, $debug=false) {
