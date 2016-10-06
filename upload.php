@@ -57,7 +57,7 @@ case 'BulkCERT': {
 		}
 		//Working Section
 
-		Unzip(UPLOADS_DIRECTORY,UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name']);
+		$unzip_loc = (string) unzip(UPLOADS_DIRECTORY.$_FILES['uploaded_zipfile']['name']);
 		
 	} break;
 	
