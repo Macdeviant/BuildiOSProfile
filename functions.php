@@ -54,33 +54,9 @@ function get_cert_data () {
     		echo "Error: Unable to read the cert store.\n";
    			throw new Exception("Error: Unable to read the cert store.");
     								exit;
+	}
 }
-
-}
-
-
-
-function unzip_pfx () {
-  if(!file_exists(UPLOADS_DIRECTORY.$_FILES['uploaded_zipfile']['name'])) {
-			echo "File not found.1";
-			throw new Exception('File not found.1', 123);
-									exit;
-
-        }
-
-	if (!is_file(UPLOADS_DIRECTORY.$_FILES['uploaded_zipfile']['name'])) {
-			echo "File not found.2";
-            throw new Exception('File not found.2', 123);
-                					exit;
-
-        }
-
-        
-        	
-        
-}
-//OR
-//Unzip($dir,$file); 
+ 
 
 function Unzip($dir, $file, $destiny="") 
 { 
