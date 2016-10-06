@@ -57,7 +57,7 @@ case 'BulkCERT': {
 		}
 		//Working Section
 
-		Unzip(UPLOADS_DIRECTORY,$_FILES['uploaded_zipfile']); 
+		Unzip(UPLOADS_DIRECTORY,UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name']);
 		
 	} break;
 	
@@ -95,7 +95,6 @@ case 'PCERT': {
 
 
 echo "<br>";
-echo $edu_un;echo $edu_un;echo $edu_un;
 echo "<br>";
 echo "Finish";
 ?>
