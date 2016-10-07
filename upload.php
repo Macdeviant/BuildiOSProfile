@@ -56,8 +56,8 @@ case 'BulkCERT': {
 			}
 		}
 		//Working Section
-
-		$unzip_loc = (string) unzip(UPLOADS_DIRECTORY.$_FILES['uploaded_zipfile']['name']);
+		chdir(UPLOADS_DIRECTORY);
+		unzip($_FILES['uploaded_zipfile']['name']);
 		
 	} break;
 	
