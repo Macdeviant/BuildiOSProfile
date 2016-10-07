@@ -23,13 +23,6 @@ function get_cert_data () {
 
         }
 
-	if (!is_file(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name'])) {
-			echo "File not found.2";
-            throw new Exception('File not found.2', 123);
-                					exit;
-
-        }
-
         $rawpfx = file_get_contents(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name']);
         if ($rawpfx === false) {
         	echo "Could not get file contents";
