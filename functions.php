@@ -1,36 +1,54 @@
 <?php
 
-function checkInput($keys) {
+function checkInput($keys) { //check value exists
 	foreach ($keys as $key) {
 		if (empty($_POST[$key])) {
-			die("" . ucfirst($key) . " must be set for config to be valid!");
+			die("Error: " . ucfirst($key) . " must be set for config to be valid!");
 		}
 	}
 }
 
-
-	//  PayloadUUID function
-function gen_uuid () {
+function gen_uuid () { //create random UUID function
 		return rtrim(shell_exec("uuidgen"));
 	}
 	
+function gen_uuid2() { //create random UUID function without uuidgen executable
+    return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        // 32 bits for "time_low"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
 
-function get_cert_data () {
+        // 16 bits for "time_mid"
+        mt_rand( 0, 0xffff ),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 4
+        mt_rand( 0, 0x0fff ) | 0x4000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        mt_rand( 0, 0x3fff ) | 0x8000,
+
+        // 48 bits for "node"
+        mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+    );
+}
+
+function get_cert_dataOLD () { //pull cert data out of pfx file using password given
    if(!file_exists(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name'])) {
-			echo "File not found.1";
-			throw new Exception('File not found.1', 123);
+			echo "File not found.";
+			throw new Exception('Error: File not found.', 123);
 									exit;
-
         }
 
         $rawpfx = file_get_contents(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name']);
         if ($rawpfx === false) {
-        	echo "Could not get file contents";
-            throw new Exception('Could not get file contents');
+        	echo "Error: Could not get file contents";
+            throw new Exception('Error: Could not get file contents');
                 					exit;
         }
         $pfx_Cert_pw = $_POST["pfx_Cert_pw"];
-		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "password" : $pfx_Cert_pw;
+		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "eduSTAR.NET" : $pfx_Cert_pw;
 		$crts = array();
 		
 	if ($parsed = openssl_pkcs12_read($rawpfx, $crts, $pfx_Cert_pw)) {
@@ -42,7 +60,6 @@ function get_cert_data () {
     $pureCert = trim($pureCert);
 	return $pureCert;
 
-	
 		} else {
     		echo "Error: Unable to read the cert store.\n";
    			throw new Exception("Error: Unable to read the cert store.");
@@ -50,21 +67,68 @@ function get_cert_data () {
 	}
 }
  
+ 
+function get_cert_data ($file) { //pull cert data out of pfx file using password given
+   if(!file_exists(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name'])) {
+			echo "File not found.";
+			throw new Exception('Error: File not found.', 123);
+									exit;
+        }
 
-function unzip($file){ //http://php.net/manual/en/ref.zip.php
+        $rawpfx = file_get_contents(UPLOADS_DIRECTORY.$_FILES['uploaded_pfxfile']['name']);
+        if ($rawpfx === false) {
+        	echo "Could not get file contents";
+            throw new Exception('Error: Could not get file contents.');
+                					exit;
+        }
+        $pfx_Cert_pw = $_POST["pfx_Cert_pw"];
+		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "eduSTAR.NET" : $pfx_Cert_pw;
+		$crts = array();
+		$tmpfile = touch("tmpfile");
 
+	if ($pureCert = openssl_pkcs12_read($rawpfx, $crts, $pfx_Cert_pw)) {
+	shell_exec("openssl enc -a -in $file -out tmpfile");
+	$pureCert = file_get_contents("tmpfile");
+    $pureCert = trim($pureCert);
+	return $pureCert;
+
+		} else {
+    		echo "Error: Unable to read the cert store.\n";
+   			throw new Exception("Error: Unable to read the cert store.");
+    								exit;
+	}
+} 
+
+function openssl_enc($file) {
+	$tmpfile = touch("tmpfile");
+	shell_exec("openssl enc -a -in $file -out tmpfile");
+	$pureCert = file_get_contents("tmpfile");
+    $pureCert = trim($pureCert);
+	return $pureCert;
+}
+
+function unziploop(){
+		$x = 1;
+		do {
+		unzip($_FILES['uploaded_zipfile']['name']);
+		$x++;
+		} while ($x <= 10);
+	}
+
+function unzip($file){ //unzip("test.zip");
     $zip=zip_open(realpath(".")."/".$file);
     if(!$zip) {return("Unable to proccess file '{$file}'");}
 
+    $e='';
 
     while($zip_entry=zip_read($zip)) {
        $zdir=dirname(zip_entry_name($zip_entry));
        $zname=zip_entry_name($zip_entry);
 
-       if(!zip_entry_open($zip,$zip_entry,"r")) {$e.="Unable to proccess file '{$zname}'";continue;}
+       if(!zip_entry_open($zip,$zip_entry,"r")) {$e.="Error: Unable to proccess file '{$zname}'";continue;}
        if(!is_dir($zdir)) mkdirr($zdir,0777);
 
-       print "{$zdir} | {$zname} \n";
+       #print "{$zdir} | {$zname} \n";
 
        $zip_fs=zip_entry_filesize($zip_entry);
        if(empty($zip_fs)) continue;
@@ -79,10 +143,10 @@ function unzip($file){ //http://php.net/manual/en/ref.zip.php
     } 
     zip_close($zip);
 
+    return($e);
 } 
 
-function mkdirr($pn,$mode=null) {
-
+function mkdirr($pn,$mode=null) { //create directory
   if(is_dir($pn)||empty($pn)) return true;
   $pn=str_replace(array('/', ''),DIRECTORY_SEPARATOR,$pn);
 
@@ -94,7 +158,7 @@ function mkdirr($pn,$mode=null) {
 }
 
 
-function prettyXML($xml, $debug=false) {
+function prettyXML($xml, $debug=false) { //makes xml pretty and readable
   // add marker linefeeds to aid the pretty-tokeniser
   // adds a linefeed between all tag-end boundaries
   $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
