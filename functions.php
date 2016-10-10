@@ -48,7 +48,7 @@ function get_cert_dataOLD () { //pull cert data out of pfx file using password g
                 					exit;
         }
         $pfx_Cert_pw = $_POST["pfx_Cert_pw"];
-		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "eduSTAR.NET" : $pfx_Cert_pw;
+		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "DefaultPassword" : $pfx_Cert_pw;
 		$crts = array();
 		
 	if ($parsed = openssl_pkcs12_read($rawpfx, $crts, $pfx_Cert_pw)) {
@@ -82,7 +82,7 @@ function get_cert_data ($file) { //pull cert data out of pfx file using password
                 					exit;
         }
         $pfx_Cert_pw = $_POST["pfx_Cert_pw"];
-		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "eduSTAR.NET" : $pfx_Cert_pw;
+		$pfx_Cert_pw = (!isSet( $pfx_Cert_pw ) || empty( $pfx_Cert_pw ) )? "DefaultPassword" : $pfx_Cert_pw;
 		$crts = array();
 		$tmpfile = touch("tmpfile");
 
