@@ -1,1 +1,2 @@
 http://keith-wood.name/datepick.HTML
+Maybe https://github.com/dbushell/Pikaday soon?
