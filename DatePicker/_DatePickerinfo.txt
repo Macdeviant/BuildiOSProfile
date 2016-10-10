@@ -1,2 +1,4 @@
 http://keith-wood.name/datepick.HTML
 Maybe https://github.com/dbushell/Pikaday soon?
+
+http://www.bitrepository.com/a-collection-of-free-javascript-date-pickers.html
